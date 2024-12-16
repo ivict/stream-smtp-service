@@ -1,0 +1,41 @@
+version: '3.7'
+
+# Settings and configurations that are common for all containers
+x-containers-common: &containers-common
+  logging:
+    driver: "json-file"
+    options:
+      # The same as in promtail configuration
+      tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+
+services:
+  stream-smtp-service:
+    <<: *containers-common
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      redis:
+        condition: service_healthy
+    mem_limit: 64m
+    env_file:
+      - .env
+
+  redis:
+    <<: *containers-common
+    image: docker.io/redis:latest
+    mem_limit: 128m
+    ports:
+      - "6378:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - .data/redis:/data
+    # Notice: health-check combined with configure (@see notify-keyspace-events)
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli config set notify-keyspace-events KEA && redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+
