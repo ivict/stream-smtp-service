@@ -29,3 +29,9 @@ __debug*
 
 # IDE specific
 .vscode
+
+# Local testing
+.data
+.history
+.tmp
+.logs

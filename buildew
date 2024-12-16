@@ -28,6 +28,12 @@ if [[ "$(go version)" =~ .*([0-9]+\.[0-9]+\.[0-9]+).* ]]; then
     fi
 fi
 
+echo EXECUTE
+echo "=========== $COMMAND"
+echo "$COMMAND ==========="
+echo COMMAND
+
+
 # ========================= LOCAL ENVIRONMENT VARIABLES =======================
 
 if [ -f '.env' ]; then
@@ -104,7 +110,102 @@ if [ "$COMMAND" == "generate" ] || [ "$COMMAND" == "gen" ]; then
     done
 fi
 
+# ========================= LOCAL DOCKER COMPOSE ==============================
+
+# SERVICES from ./docker-compose.local.yml
+SERVICES=('redis' 'stream-smtp-service')
+DOCKER_COMPOSE="docker-compose -f docker-compose.local.yml"
+
+function check_folder {
+    FOLDER=$1
+    mkdir -p "$FOLDER" || exit 1
+    chmod a+rwx "$FOLDER"
+    for SERVICE in "${SERVICES[@]}"; do
+        mkdir -p "$FOLDER/$SERVICE" || exit 1
+        chmod a+rwx "$FOLDER/$SERVICE"
+    done
+}
+
+function check_history_folder {
+    FOLDER=.history
+    mkdir -p $FOLDER || exit 1
+    chmod a+rwx $FOLDER
+    for SERVICE in "${SERVICES[@]}"; do
+        mkdir -p "$FOLDER/$SERVICE" || exit 1
+        chmod a+rwx "$FOLDER/$SERVICE"
+        touch "$FOLDER/$SERVICE/.bash_history"
+        chmod a+rwx "$FOLDER/$SERVICE/.bash_history"
+    done
+}
+
+function check_all_folders {
+    # Check the data folders
+    check_folder .data
+
+    # Check the temporary folders
+    check_folder .tmp
+
+    # Check the logger folders
+    check_folder .logs
+
+    # Check the home folders
+    check_history_folder
+}
+
+function start {
+
+    check_all_folders
+
+    if [ "$1" == "" ]; then
+        $DOCKER_COMPOSE up
+    else
+        # Parse arguments to detect service group "core"
+        DOCKER_COMPOSE_ARGUMENTS=
+        for ARG in "$@"; do
+            DOCKER_COMPOSE_ARGUMENTS="$DOCKER_COMPOSE_ARGUMENTS $ARG"
+        done
+
+        $DOCKER_COMPOSE up $DOCKER_COMPOSE_ARGUMENTS
+    fi
+}
+
+if [ "$COMMAND" == "up" ] || [ "$COMMAND" == "start" ]; then
+    echo 'Run docker images'
+
+    start "$@"
+
+fi
+
+function stop {
+    if [ "$1" == "" ]; then
+        $DOCKER_COMPOSE down -v
+    else
+        $DOCKER_COMPOSE stop "$@"
+    fi
+}
+
+if [ "$COMMAND" == "stop" ] || [ "$COMMAND" == "down" ] || [ "$COMMAND" == "finish" ]; then
+    echo 'Stop docker images'
+
+    stop "$@"
+fi
+
+if [ "$COMMAND" == "restart" ]; then
+    echo 'Restart'
+    stop "$@"
+    start "$@"
+fi
+
+if [ "$COMMAND" == "check" ]; then
+    echo 'Check folders for the docker compose'
+
+    check_all_folders || {
+        echo "Line 231: Error in build... Exit..."
+        exit 1
+    }
+fi
+
 # =================================================================================================
 
-AVAILABLE_COMMANDS="test tests version gen"
+AVAILABLE_COMMANDS="test tests version gen start stop up down finish"
 [[ $AVAILABLE_COMMANDS =~ (^| )$COMMAND($| ) ]] && echo 'Ok' || (echo 'Unknown command: ' "$COMMAND" && echo 'Available commands are: ' "$AVAILABLE_COMMANDS")
