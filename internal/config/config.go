@@ -20,7 +20,7 @@ type Config struct {
 func LoadConfig() Config {
 	err := godotenv.Load()
 	if err != nil {
-		log.Info().Msg("Error loading .env file")
+		log.Info().Msg("Error loading .env file, perhaps running on docker infrastructure.")
 	}
 
 	logLevel, _ := strconv.Atoi(os.Getenv("LOG_LEVEL"))

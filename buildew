@@ -152,20 +152,22 @@ function check_all_folders {
     check_history_folder
 }
 
+DEFAULT_DOCKER_COMPOSE_ARGS="--build"
+
 function start {
 
     check_all_folders
 
     if [ "$1" == "" ]; then
-        $DOCKER_COMPOSE up
+        $DOCKER_COMPOSE up $DEFAULT_DOCKER_COMPOSE_ARGS
     else
-        # Parse arguments to detect service group "core"
+        # Parse arguments if it necessary
         DOCKER_COMPOSE_ARGUMENTS=
         for ARG in "$@"; do
             DOCKER_COMPOSE_ARGUMENTS="$DOCKER_COMPOSE_ARGUMENTS $ARG"
         done
 
-        $DOCKER_COMPOSE up $DOCKER_COMPOSE_ARGUMENTS
+        $DOCKER_COMPOSE up $DOCKER_COMPOSE_ARGUMENTS $DEFAULT_DOCKER_COMPOSE_ARGS
     fi
 }
 
