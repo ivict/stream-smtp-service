@@ -3,10 +3,9 @@ package main
 import (
 	"os"
 
+	"github.com/Capstane/stream-auth-service/internal/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-
-	"github.com/ivict/stream-smtp-service/internal/config"
 )
 
 func main() {
@@ -15,5 +14,7 @@ func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout})
 
 	cfg := config.LoadConfig()
-	zerolog.SetGlobalLevel(cfg)
+	zerolog.SetGlobalLevel(zerolog.Level(cfg.LogLevel))
+
+	// TODO: implement redis listener
 }

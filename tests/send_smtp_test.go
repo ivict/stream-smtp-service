@@ -7,15 +7,25 @@ import (
 	"net"
 	"net/mail"
 	"net/smtp"
+	"os"
 	"testing"
+
+	"github.com/Capstane/stream-auth-service/internal/config"
 )
 
 // SSL/TLS Email test
 
-func SendTlsSmtpTest(t *testing.T) {
+/**
 
-	from := mail.Address{Name: "", Address: "username@example.tld"}
-	to := mail.Address{Name: "", Address: "username@anotherexample.tld"}
+{"type": "@mail.Plain", "text": "simple text", "to": "test@google.com"}
+
+**/
+
+func SendTlsSmtpTest(t *testing.T) {
+	cfg := config.LoadConfig()
+
+	from := mail.Address{Name: "", Address: cfg.SmtpFrom}
+	to := mail.Address{Name: "", Address: os.Getenv("TEST_SMTP_TO")}
 	subj := "This is the email subject"
 	body := "This is an example body.\n With two lines."
 

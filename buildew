@@ -46,6 +46,12 @@ STREAM_SMTP_SERVICE_PACKAGE_VERSION=0.0.0
 EOF
 echo "# Imported from .env.template" >> .env
 cat .env.template >> .env
+echo -e "\n" >> .env
+
+    cat >>'.env' <<EOF
+# Email box for tests
+TEST_SMTP_TO=
+EOF
 fi
 
 # Warn: STREAM_SMTP_SERVICE_PACKAGE_VERSION read from .env file

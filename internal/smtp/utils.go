@@ -1,5 +1,5 @@
 package smtp
 
-import "net/smtp"
-
-func ParseSmtpConnectionString(smtpConnectionString string) smtp.Auth
+func ParseSmtpConnectionString(smtpConnectionString string) map[string]any {
+	return map[string]any{}
+}
