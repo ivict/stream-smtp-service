@@ -2,7 +2,7 @@ package smtpx
 
 import "strings"
 
-type SmtpEncryptionType uint
+type SmtpEncryptionType uint8
 
 const (
 	NoEncryption SmtpEncryptionType = iota

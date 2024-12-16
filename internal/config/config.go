@@ -10,9 +10,12 @@ import (
 )
 
 type Config struct {
-	LogLevel     int8   `default:"4" envconfig:"LOG_LEVEL"`
-	RedisHost    string `binding:"required" envconfig:"REDIS_HOST"`
-	RedisPort    uint16 `binding:"required" envconfig:"REDIS_PORT"`
+	LogLevel int8 `default:"4" envconfig:"LOG_LEVEL"`
+
+	RedisHost  string `binding:"required" envconfig:"REDIS_HOST"`
+	RedisPort  uint16 `binding:"required" envconfig:"REDIS_PORT"`
+	RedisTopic string `binding:"required" envconfig:"REDIS_TOPIC"`
+
 	SmtpHost     string `binding:"required" envconfig:"SMTP_HOST"`
 	SmtpPort     uint16 `binding:"required" envconfig:"SMTP_PORT"`
 	SmtpFrom     string `binding:"required" envconfig:"SMTP_FROM"`
@@ -30,9 +33,12 @@ func LoadConfig() Config {
 	logLevel, _ := strconv.Atoi(os.Getenv("LOG_LEVEL"))
 
 	return Config{
-		LogLevel:     int8(logLevel),
-		RedisHost:    os.Getenv("REDIS_HOST"),
-		RedisPort:    internal.ParseUint16(os.Getenv("REDIS_PORT")),
+		LogLevel: int8(logLevel),
+
+		RedisHost:  os.Getenv("REDIS_HOST"),
+		RedisPort:  internal.ParseUint16(os.Getenv("REDIS_PORT")),
+		RedisTopic: os.Getenv("REDIS_TOPIC"),
+
 		SmtpHost:     os.Getenv("SMTP_HOST"),
 		SmtpPort:     internal.ParseUint16(os.Getenv("SMTP_PORT")),
 		SmtpFrom:     os.Getenv("SMTP_FROM"),
