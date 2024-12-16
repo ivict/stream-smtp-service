@@ -1,4 +1,4 @@
-package smtp
+package smtpx
 
 import "strings"
 
@@ -8,7 +8,7 @@ const (
 	NoEncryption SmtpEncryptionType = iota
 	Ssl
 	Tls
-	StarTls
+	StartTls
 )
 
 func ParseEncryptionType(encryptionType string) SmtpEncryptionType {
@@ -17,8 +17,8 @@ func ParseEncryptionType(encryptionType string) SmtpEncryptionType {
 		return Ssl
 	case "TLS":
 		return Tls
-	case "STARTLS":
-		return StarTls
+	case "STARTTLS":
+		return StartTls
 	default:
 		return NoEncryption
 	}

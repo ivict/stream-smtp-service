@@ -6,7 +6,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func RestConnectTest(t *testing.T) {
+func TestRestConnect(t *testing.T) {
 	options := redis.Options{}
 	// Instantiate client
 	client := redis.NewClient(&options)
