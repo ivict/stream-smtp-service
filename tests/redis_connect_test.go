@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"context"
 	"testing"
 
 	"github.com/Capstane/stream-auth-service/internal"
@@ -21,4 +22,10 @@ func TestRestConnect(t *testing.T) {
 		panic("No sense to continue")
 	}
 	defer client.Close()
+
+	ctx := context.Background()
+	_, err := client.Ping(ctx).Result()
+	if err != nil {
+		t.Error(err)
+	}
 }
