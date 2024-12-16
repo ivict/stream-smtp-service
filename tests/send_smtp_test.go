@@ -8,6 +8,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/Capstane/stream-auth-service/internal"
 	"github.com/Capstane/stream-auth-service/internal/config"
 	"github.com/Capstane/stream-auth-service/internal/smtpx"
 )
@@ -44,7 +45,7 @@ func TestSendByTlsSmtp(t *testing.T) {
 	message += "\r\n" + body
 
 	// Connect to the SMTP Server
-	servername := fmt.Sprintf("%s:%s", cfg.SmtpHost, cfg.SmtpPort)
+	servername := internal.FormatAddr(cfg.SmtpHost, cfg.SmtpPort)
 
 	auth := smtp.PlainAuth("", cfg.SmtpUser, cfg.SmtpPassword, cfg.SmtpHost)
 
@@ -113,7 +114,7 @@ func TestSmtpGmail(t *testing.T) {
 		"Subject: New Hack\r\n" +
 		"\r\n" +
 		"Wonderful solution\r\n")
-	err := smtpx.SendMail(cfg.SmtpHost, smtpx.ParseUint16(cfg.SmtpPort), auth, cfg.SmtpFrom, to, msg)
+	err := smtpx.SendMail(cfg.SmtpHost, cfg.SmtpPort, auth, cfg.SmtpFrom, to, msg)
 	if err != nil {
 		t.Error(err)
 	}

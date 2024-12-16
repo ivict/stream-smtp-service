@@ -4,6 +4,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/Capstane/stream-auth-service/internal"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog/log"
 )
@@ -11,9 +12,9 @@ import (
 type Config struct {
 	LogLevel     int8   `default:"4" envconfig:"LOG_LEVEL"`
 	RedisHost    string `binding:"required" envconfig:"REDIS_HOST"`
-	RedisPort    string `binding:"required" envconfig:"REDIS_PORT"`
+	RedisPort    uint16 `binding:"required" envconfig:"REDIS_PORT"`
 	SmtpHost     string `binding:"required" envconfig:"SMTP_HOST"`
-	SmtpPort     string `binding:"required" envconfig:"SMTP_PORT"`
+	SmtpPort     uint16 `binding:"required" envconfig:"SMTP_PORT"`
 	SmtpFrom     string `binding:"required" envconfig:"SMTP_FROM"`
 	SmtpUser     string `binding:"required" envconfig:"SMTP_USER"`
 	SmtpPassword string `binding:"required" envconfig:"SMTP_PASSWORD"`
@@ -31,9 +32,9 @@ func LoadConfig() Config {
 	return Config{
 		LogLevel:     int8(logLevel),
 		RedisHost:    os.Getenv("REDIS_HOST"),
-		RedisPort:    os.Getenv("REDIS_PORT"),
+		RedisPort:    internal.ParseUint16(os.Getenv("REDIS_PORT")),
 		SmtpHost:     os.Getenv("SMTP_HOST"),
-		SmtpPort:     os.Getenv("SMTP_PORT"),
+		SmtpPort:     internal.ParseUint16(os.Getenv("SMTP_PORT")),
 		SmtpFrom:     os.Getenv("SMTP_FROM"),
 		SmtpUser:     os.Getenv("SMTP_USER"),
 		SmtpPassword: os.Getenv("SMTP_PASSWORD"),

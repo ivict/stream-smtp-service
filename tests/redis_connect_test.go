@@ -3,11 +3,17 @@ package tests
 import (
 	"testing"
 
+	"github.com/Capstane/stream-auth-service/internal"
+	"github.com/Capstane/stream-auth-service/internal/config"
 	"github.com/redis/go-redis/v9"
 )
 
 func TestRestConnect(t *testing.T) {
-	options := redis.Options{}
+	cfg := config.LoadConfig()
+
+	options := redis.Options{
+		Addr: internal.FormatAddr(cfg.RedisHost, cfg.RedisPort),
+	}
 	// Instantiate client
 	client := redis.NewClient(&options)
 	if client == nil {
