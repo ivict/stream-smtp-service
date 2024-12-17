@@ -3,7 +3,9 @@ package tests
 import (
 	"context"
 	"os"
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/Capstane/stream-auth-service/internal"
 	"github.com/Capstane/stream-auth-service/internal/config"
@@ -46,15 +48,20 @@ func TestSendEmailMessageAsJson(t *testing.T) {
 	}
 	defer client.Close()
 
+	millis := time.Now().UnixNano() / 1e6
+	messageId := strconv.Itoa(int(millis)) + "-*"
+
 	ctx := context.Background()
 	_, err := client.XAdd(ctx, &redis.XAddArgs{
 		Stream: cfg.RedisStream,
 		MaxLen: 1,
 		Values: stream.SmtpMessage{
-			Type: stream.MailPlain.String(),
-			Text: "Lorem Ipsum",
-			To:   os.Getenv("TEST_SMTP_TO"),
+			Type:    stream.MailPlain.String(),
+			Subject: "TestSendEmailMessageAsJson",
+			Text:    "Lorem Ipsum",
+			To:      os.Getenv("TEST_SMTP_TO"),
 		}.Marshal(),
+		ID: messageId,
 	}).Result()
 	if err != nil {
 		t.Error(err)

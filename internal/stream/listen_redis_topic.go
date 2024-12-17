@@ -77,7 +77,13 @@ func processStream(client *redis.Client, ctx context.Context, cfg *config.Config
 	chMailSenders := make(chan redis.XMessage, cfg.MaxSimultaneousSmtpConnections)
 	go func() {
 		for streamMessage := range chMailSenders {
-			err := sendEmail(SmtpMessageUnmarshal(streamMessage.Values), cfg)
+			smtpMessage, err := SmtpMessageUnmarshal(streamMessage.Values)
+			if err != nil {
+				log.Error().Err(err)
+				continue
+			}
+
+			err = sendEmail(*smtpMessage, cfg)
 			if err == nil {
 				_, err := client.XDel(ctx, cfg.RedisStream, streamMessage.ID).Result()
 				if err != nil {
