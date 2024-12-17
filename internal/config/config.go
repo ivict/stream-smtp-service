@@ -4,7 +4,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Capstane/stream-auth-service/internal"
+	"github.com/Capstane/stream-mail-service/internal"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog/log"
 )

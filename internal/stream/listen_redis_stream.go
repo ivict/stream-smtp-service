@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Capstane/stream-auth-service/internal"
-	"github.com/Capstane/stream-auth-service/internal/config"
+	"github.com/Capstane/stream-mail-service/internal"
+	"github.com/Capstane/stream-mail-service/internal/config"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog/log"
 )

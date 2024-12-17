@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Capstane/stream-auth-service/internal"
-	"github.com/Capstane/stream-auth-service/internal/config"
-	"github.com/Capstane/stream-auth-service/internal/smtpx"
+	"github.com/Capstane/stream-mail-service/internal"
+	"github.com/Capstane/stream-mail-service/internal/config"
+	"github.com/Capstane/stream-mail-service/internal/smtpx"
 )
 
 // SSL/TLS Email test

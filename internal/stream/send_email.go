@@ -1,8 +1,8 @@
 package stream
 
 import (
-	"github.com/Capstane/stream-auth-service/internal/config"
-	"github.com/Capstane/stream-auth-service/internal/smtpx"
+	"github.com/Capstane/stream-mail-service/internal/config"
+	"github.com/Capstane/stream-mail-service/internal/smtpx"
 )
 
 func sendEmail(message SmtpMessage, cfg *config.Config) error {

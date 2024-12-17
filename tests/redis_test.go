@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Capstane/stream-auth-service/internal"
-	"github.com/Capstane/stream-auth-service/internal/config"
-	"github.com/Capstane/stream-auth-service/internal/stream"
+	"github.com/Capstane/stream-mail-service/internal"
+	"github.com/Capstane/stream-mail-service/internal/config"
+	"github.com/Capstane/stream-mail-service/internal/stream"
 	"github.com/redis/go-redis/v9"
 )
 
