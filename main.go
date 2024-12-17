@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/Capstane/stream-auth-service/internal/config"
+	"github.com/Capstane/stream-auth-service/internal/stream"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -16,5 +17,8 @@ func main() {
 	cfg := config.LoadConfig()
 	zerolog.SetGlobalLevel(zerolog.Level(cfg.LogLevel))
 
-	// TODO: implement redis listener
+	err := stream.ListenRedisStream(cfg)
+	if err != nil {
+		log.Error().Err(err)
+	}
 }

@@ -7,7 +7,7 @@ import (
 
 	"github.com/Capstane/stream-auth-service/internal"
 	"github.com/Capstane/stream-auth-service/internal/config"
-	"github.com/Capstane/stream-auth-service/internal/topic"
+	"github.com/Capstane/stream-auth-service/internal/stream"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -47,12 +47,15 @@ func TestSendEmailMessageAsJson(t *testing.T) {
 	defer client.Close()
 
 	ctx := context.Background()
-	_, err := client.Publish(ctx, cfg.RedisTopic, &topic.SmtpMessage{
-		Type: topic.MailPlain.String(),
-		Text: "Lorem Ipsum",
-		To:   os.Getenv("TEST_SMTP_TO"),
+	_, err := client.XAdd(ctx, &redis.XAddArgs{
+		Stream: cfg.RedisStream,
+		MaxLen: 1,
+		Values: stream.SmtpMessage{
+			Type: stream.MailPlain.String(),
+			Text: "Lorem Ipsum",
+			To:   os.Getenv("TEST_SMTP_TO"),
+		}.Marshal(),
 	}).Result()
-
 	if err != nil {
 		t.Error(err)
 	}

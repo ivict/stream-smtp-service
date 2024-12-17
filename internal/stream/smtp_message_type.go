@@ -1,4 +1,4 @@
-package topic
+package stream
 
 type SmtpMessageType uint8
 
