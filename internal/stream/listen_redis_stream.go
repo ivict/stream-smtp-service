@@ -94,11 +94,13 @@ func processStream(client *redis.Client, ctx context.Context, cfg *config.Config
 	}()
 
 	printLogo()
+	circularBuffer := NewCircularBuffer(cfg.MaxSimultaneousSmtpConnections)
 	for {
 		xStreams, err := client.XRead(ctx, &redis.XReadArgs{
 			Streams: []string{cfg.RedisStream},
 			Block:   0,
 			ID:      "+",
+			Count:   int64(cfg.MaxSimultaneousSmtpConnections),
 		}).Result()
 
 		if err != nil {
@@ -106,8 +108,12 @@ func processStream(client *redis.Client, ctx context.Context, cfg *config.Config
 		}
 
 		for _, xStream := range xStreams {
-			lastMessage := internal.Last(xStream.Messages)
-			chMailSenders <- lastMessage
+			for _, message := range xStream.Messages {
+				if !circularBuffer.Has(message.ID) {
+					chMailSenders <- message
+				}
+				circularBuffer.Put(message.ID)
+			}
 		}
 
 	}
